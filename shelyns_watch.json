@@ -1,0 +1,145 @@
+{
+  "locations": {
+    "B2": {
+      "name": "Scampbite"
+    },
+    "D10": {
+      "name": "Knuckle"
+    },
+    "I3": {
+      "name": "Smolrok"
+    },
+    "N2": {
+      "name": "Lord Elrack's Rest"
+    },
+    "N16": {
+      "name": "Secret Pirate's Den"
+    },
+    "Q9": {
+      "name": "Starkeep"
+    },
+    "S7": {
+      "name": "Krug"
+    }
+  },
+  "factions": [
+    {
+      "name": "Starwatch Kangdom",
+      "level": 1,
+      "territory": [
+        "Q9"
+      ],
+      "colour": "#002366",
+      "cabinet": {
+        "kang": "Zrigkass",
+        "warlord": "Skropling",
+        "shaman": "Tick",
+        "vizier": "Fai'he'eavexc'jjiz (NPC)",
+        "treasurer": "Mathkin Cartson (NPC)",
+        "regent": "Thonk (NPC)"
+      },
+      "alignment": "Chaotic Good",
+      "laws": [
+        {
+          "name": "kang selection",
+          "option": "Might Makes Right"
+        }
+      ],
+      "feats": [],
+      "stats": {
+        "stability": 6,
+        "arcana": 10,
+        "military": 12,
+        "population": 12,
+        "loyalty": 16,
+        "economy": 10
+      },
+      "damage": {
+        "stability": 4,
+        "arcana": 0,
+        "military": 0,
+        "population": 0,
+        "loyalty": 3,
+        "economy": 0
+      },
+      "saves": {
+        "stability": 0,
+        "arcana": 0,
+        "military": 1,
+        "population": 0,
+        "loyalty": 0,
+        "economy": 0
+      },
+      "skills": {
+        "popularity": 0,
+        "nobility": 0,
+        "knowledge": 0,
+        "faith": 0,
+        "tactics": 0,
+        "strategy": 0,
+        "foreign": 0,
+        "domestic": 0,
+        "food": 1,
+        "entertainment": 0,
+        "production": 0,
+        "trade": 0
+      },
+      "resources": {
+        "hex": 1,
+        "maxhex": 1,
+        "lots": 4,
+        "empty_lots": 2,
+        "bp": 17
+      },
+      "buildings": [
+        "Fort",
+        "Farm",
+        "Palisade"
+      ],
+      "taxes": {
+        "base": "low",
+        "wealth": "low",
+        "vat": "low",
+        "tariffs": "low"
+      }
+    },
+    {
+      "name": "Sharpknuckle Tribe",
+      "level": 4,
+      "territory": [
+        "A5",
+        "B6",
+        "A7",
+        "B8",
+        "A9",
+        "C9",
+        "E9",
+        "G9",
+        "B10",
+        "D10",
+        "F10",
+        "H10",
+        "A11",
+        "C11",
+        "E11",
+        "G11",
+        "B12",
+        "D12",
+        "F12",
+        "A13",
+        "C13",
+        "E13"
+      ],
+      "colour": "#d43131",
+      "alignment": "Chaotic Evil",
+      "cabinet": {
+        "kang": "Warchief Ungruz Sharpknuckle",
+        "warlord": "Warmaster Ik Splik",
+        "shaman": "Warpriest Kakla",
+        "vizier": "Warcriminal Zoog",
+        "treasurer": "Waraccountant Er'enith'leth'in",
+        "regent": "Warlord Xak Sharpknuckle"
+      }
+    }
+  ]
+}

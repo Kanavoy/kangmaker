@@ -7,27 +7,9 @@
 <script type="text/javascript" src="./HexCalcs.js"></script>
 <link href="./main.css" rel="stylesheet" type="text/css" media="all">
 <script type="text/javascript">
-var mapGridData, factions
-function switchControls(name) {
-	for (let t of document.getElementsByName("controls"))
-		document.getElementById(t.value).style.display = ["none","block"][+t.checked]
-}
-function onChangeMap() {
-	let file = document.getElementById("mapImage").files[0]
-	document.getElementById("mapImg").src = URL.createObjectURL(file)
-}
-function makeHexGrid() {
-	let canvas = document.getElementById("hexCanvas")
-	if(document.getElementById("hexOrientationNormal").checked)
-		HT.Hexagon.Static.ORIENTATION = HT.Hexagon.Orientation.Normal
-	else
-		HT.Hexagon.Static.ORIENTATION = HT.Hexagon.Orientation.Rotated
-	if(document.getElementById("hexCalculationSideRatio").checked)
-		findHexWithSideLengthZAndRatio()
-	else
-		findHexWithWidthAndHeight()
-	mapGridData = new HT.Grid(canvas.width, canvas.height)
-	var locations = {
+var mapGridData,
+data = {
+	locations: {
 		B2:		{name:"Scampbite"},
 		D10:	{name:"Knuckle"},
 		I3:		{name:"Smolrok"},
@@ -35,8 +17,8 @@ function makeHexGrid() {
 		N16:	{name:"Secret Pirate's Den"},
 		Q9:		{name:"Starkeep"},
 		S7:		{name:"Krug"}	
-	}
-	factions = [
+	},
+	factions : [
 		{
 			name:"Starwatch Kangdom",
 			level:1,
@@ -153,15 +135,45 @@ function makeHexGrid() {
 			alignment:"Neutral Evil",
 		}
 	]
-	for (let f of factions) {
+}
+function switchControls(name) {
+	for (let t of document.getElementsByName("controls"))
+		document.getElementById(t.value).style.display = ["none","block"][+t.checked]
+}
+function onChangeMap() {
+	let file = document.getElementById("mapImage").files[0]
+	document.getElementById("mapImg").src = URL.createObjectURL(file)
+	
+}
+function onChangeData() {
+	let file = document.getElementById("mapData").files[0],
+	reader = new FileReader()
+	reader.onload = e => {
+		data = JSON.parse(e.target.result)
+	}
+	reader.readAsText(file)
+}
+function makeHexGrid() {
+	let canvas = document.getElementById("hexCanvas")
+	if(document.getElementById("hexOrientationNormal").checked)
+		HT.Hexagon.Static.ORIENTATION = HT.Hexagon.Orientation.Normal
+	else
+		HT.Hexagon.Static.ORIENTATION = HT.Hexagon.Orientation.Rotated
+	if(document.getElementById("hexCalculationSideRatio").checked)
+		findHexWithSideLengthZAndRatio()
+	else
+		findHexWithWidthAndHeight()
+	mapGridData = new HT.Grid(canvas.width, canvas.height)
+	for (let f of data.factions) {
 		for (let h of f.territory) {
 			mapGridData.GetHexById(h).owner = f.name
 			mapGridData.GetHexById(h).colour = f.colour
 		}
 	}
-	for (let h of Object.keys(locations)) {
-		mapGridData.GetHexById(h).name = locations[h].name
+	for (let h of Object.keys(data.locations)) {
+		mapGridData.GetHexById(h).name = data.locations[h].name
 	}
+	redraw()
 }
 function redraw() {
 	HT.Hexagon.Static.LINEWIDTH = parseFloat(document.getElementById("lineWidth").value)
@@ -172,7 +184,8 @@ function onClickCanvas(event) {
 	let s = mapGridData.GetHexAt(new HT.Point(event.offsetX, event.offsetY)),
 	writeTarget = document.getElementById("selectedHex"),
 	write = t => writeTarget.innerHTML += t,
-	cap = s => s.charAt(0).toUpperCase()+s.slice(1)
+	cap = s => s.charAt(0).toUpperCase()+s.slice(1),
+	colour = (s,c) => "<span style=\"color:"+c+"\">"+s+"</span>"
 	writeTarget.innerHTML = ""
 	write(s.Id)
 	if ("name" in s)
@@ -189,26 +202,31 @@ function onClickCanvas(event) {
 			population:["food","entertainment"],
 			economy:["production","trade"]
 		},
-		faction = factions.find(n=>n.name==s.owner)
+		faction = data.factions.find(n=>n.name==s.owner)
 
-		write("<br /><br /><u>"+faction.name+"</u><br />")
-		write("<br />Level "+faction.level+" "+faction.alignment+" Kangdom")
+		write("<br/><br/><u>"+faction.name+"</u><br/>")
+		write("<br/>Level "+faction.level+" "+faction.alignment+" Kangdom")
 		if (faction.cabinet) {
-			write("<br /><br /><u>Cabinet</u><br />")
+			write("<br/><br/><u>Cabinet</u><br/>")
 			let out = []
 			for (let m of Object.keys(faction.cabinet))
 				out.push(cap(m)+": "+faction.cabinet[m])
-			write(out.join("<br />"))
+			write(out.join("<br/>"))
 		}
 		if (faction.stats) {
-			write("<br /><br /><u>Stats</u><br />")
+			write("<br/><br/><u>Stats</u><br/>")
 			let out = []
 			for (let m of Object.keys(faction.stats)) {
-				let line = cap(m)+": "+faction.stats[m]
+				let line = cap(m)+": ",
+				currStat = faction.stats[m]
+				if (faction.damage && faction.damage[m])
+					line += colour(faction.stats[m]-faction.damage[m],"red")+"/"+faction.stats[m]
+				else
+					line += colour(faction.stats[m],"green")
 				if (faction.saves)
 					line += " ("+proficiencies[faction.saves[m]]+")"
 				if (faction.skills) {
-					line += "<br />&emsp;&emsp;"
+					line += "<br/>&emsp;&emsp;"
 					let skills = []
 					for (let s of associations[m])
 						skills.push(cap(s)+" ("+proficiencies[faction.skills[s]]+")")
@@ -216,64 +234,67 @@ function onClickCanvas(event) {
 				}
 				out.push(line)
 			}
-			write(out.join("<br />"))
+			write(out.join("<br/>"))
 		}
 		if (faction.feats && faction.feats.length) {
-			write("<br /><br /><u>Feats</u><br />")
-			write(faction.feats.join("<br />"))
+			write("<br/><br/><u>Feats</u><br/>")
+			write(faction.feats.join("<br/>"))
 		}
 		if (faction.buildings && faction.buildings.length) {
-			write("<br /><br /><u>Buildings</u><br />")
-			write(faction.buildings.join("<br />"))
+			write("<br/><br/><u>Buildings</u><br/>")
+			write(faction.buildings.join("<br/>"))
 		}
 	}
 }
 function main() {
 	document.getElementById("hexCanvas").addEventListener("click",onClickCanvas)
+	document.getElementById("mapImage").value=""
+	document.getElementById("mapData").value=""
 	for (let t of document.getElementsByName("controls"))
 		t.checked = t.value=="splashScreen"
 	makeHexGrid()
-	redraw()
 }
 </script>
 </head>
 <body onload="main()">
 <div id="content" class="sithis">
 <div id="left" class="sidebar">
-	<input type="radio" checked="true" name="controls" onchange="switchControls()" value="splashScreen"/>Main Screen<br />
-	<input type="radio" name="controls" onchange="switchControls()" value="gridControls"/>Grid Options<br />
-	<input type="radio" name="controls" onchange="switchControls()" value="overlayControls"/>Overlay Options<br /><br /><br />
+	<input type="radio" checked="true" name="controls" onchange="switchControls()" value="splashScreen"/>Main Screen<br/>
+	<input type="radio" name="controls" onchange="switchControls()" value="gridControls"/>Grid Options<br/>
+	<input type="radio" name="controls" onchange="switchControls()" value="overlayControls"/>Overlay Options<br/><br/><br/>
 	<div id="splashScreen" style="display:block">
-		<p>KANGMAKER</p>
+		<h3>KANGMAKER</h3>
+		Rules are <a href="https://homebrewery.naturalcrit.com/share/SkbLigfRr">here</a> and will be updated as and when the mood takes me. Enjoy, and hail to the kang.
 	</div>
 	<div id="gridControls" style="display:none">
-		<input type="file" id="mapImage" onchange="onChangeMap()"/><img id="mapImg" class="hidden" src="./Map.jpg"/><br />
+		Look in the source for the default data scheme, it's a big ol' chunk starting with "data = {". Make sure if you're using your own JSON file that it's valid, because I sure as hell don't validate anything.<br/><br/>
+		Map Image: <input type="file" id="mapImage" value="" onchange="onChangeMap()"/><img id="mapImg" class="hidden" src="./Map.jpg"/><br/>
+		Map JSON: <input type="file" id="mapData" value="" onchange="onChangeData()"/><br/><br/>
+		<input type="radio" name="hexOrientation" id="hexOrientationNormal" value="0" checked="true"/>Normal<br/>
+		<input type="radio" name="hexOrientation" id="hexOrientationRotated" value="1"/>Rotated<br/>
 		
-		<input type="radio" name="hexOrientation" id="hexOrientationNormal" value="0" checked="true"/>Normal<br />
-		<input type="radio" name="hexOrientation" id="hexOrientationRotated" value="1"/>Rotated<br />
+		<input type="text" id="sideLength" value="40.0"/>Side Length<br/>
+		<input type="text" id="whRatio" value="1.1547005383792515290182975610039"/>Ratio<br/>
+		<input type="text" id="hexWidth" value="100.0"/>Width<br/>
+		<input type="text" id="hexHeight" value="86.60254037844388"/>Height<br/>
 		
-		<input type="text" id="sideLength" value="40.0"/>Side Length<br />
-		<input type="text" id="whRatio" value="1.1547005383792515290182975610039"/>Ratio<br />
-		<input type="text" id="hexWidth" value="100.0"/>Width<br />
-		<input type="text" id="hexHeight" value="86.60254037844388"/>Height<br />
-		
-		<input type="radio" name="hexCalculation" id="hexCalculationSideRatio" value="0" checked="true"/>Use Side/Ratio<br />
-		<input type="radio" name="hexCalculation" id="hexCalculationWidthHeight" value="1" />Use Width/Height<br />
+		<input type="radio" name="hexCalculation" id="hexCalculationSideRatio" value="0" checked="true"/>Use Side/Ratio<br/>
+		<input type="radio" name="hexCalculation" id="hexCalculationWidthHeight" value="1" />Use Width/Height<br/>
 		
 		<input type="button" onclick="makeHexGrid()" value="Make Hex Grid"/>
 		<div id="hexStatus" class="hidden"></div>
 	</div>
 
 	<div id="overlayControls" style="display:none">
-		<input type="range" id="lineWidth" min="0.1" max="5" step="0.1" value="1" onchange="redraw()"/>Edge Width<br />
-		<input type="range" id="shadeTerritory" min="0" max="1" step="0.05" value="0.3" onchange="redraw()">Shade Territory<br />
+		<input type="range" id="lineWidth" min="0.1" max="5" step="0.1" value="1" onchange="redraw()"/>Edge Width<br/>
+		<input type="range" id="shadeTerritory" min="0" max="1" step="0.05" value="0.3" onchange="redraw()">Shade Territory<br/>
 	</div>
 </div>
 <div id="centre" style="flex-basis:1024px" class="mainScreen">
 	<canvas id="hexCanvas" width="1024" height="768" style="width:1024px;height:768px" />
 </div>
 <div id="right" class="sidebar">
-	Selected: <span id="selectedHex">no hex selected</span><br /><br />
+	Selected: <span id="selectedHex">no hex selected</span><br/><br/>
 	<div id="showPage">
 	</div>
 </div>
