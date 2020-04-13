@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-UK">
+<head>
+<meta charset="UTF-8">
+<link href="./main.css" rel="stylesheet" type="text/css" media="all">
+<script type="text/javascript">
+var areas = {
+	"North-West": {
+		img: "northwest.jpg",
+		regions: {
+			"Shelyn's Watch" : "525,605"
+		}
+	},
+	"South-West": {
+		img: "southwest.jpg",
+		regions: {}
+	},
+	"Shelyn's Watch": {
+		img: "shelyns_watch.jpg",
+		desc: "See the Kangmaker-specific map <a href=\"./index.html\">here</a>",
+		regions: {}
+	}
+}
+function changeRegion() {
+	let box = document.getElementById("mapImg"),
+	selectBox = document.getElementById("mapChoice"),
+	selectedMapName = selectBox.options[selectBox.selectedIndex].text,
+	map = areas[selectedMapName]
+	box.src = "./maps/"+map.img
+	if (map.desc) {
+		document.getElementById("description").innerHTML = map.desc
+	} else {
+		document.getElementById("description").innerHTML = ""
+	}
+}
+function updateCanvas() {
+	canvas = document.getElementById("mapCanvas"),
+	ctx = canvas.getContext('2d'),
+	img = document.getElementById("mapImg")
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.drawImage(img, 0, 0)
+	
+	try {
+		let box = document.getElementById("mapImg"),
+		selectBox = document.getElementById("mapChoice"),
+		selectedMapName = selectBox.options[selectBox.selectedIndex].text,
+		map = areas[selectedMapName]
+		for (let point in map.regions) {
+			let coords=map.regions[point],
+			x=coords.split(",")[0], y=coords.split(",")[1]
+			
+			ctx.fillStyle = "#FF0000"
+			ctx.strokeStyle = "#000000"
+			ctx.moveTo(x,y)
+			ctx.lineTo(x-15,y-35)
+			ctx.arc(x,y-35,15,Math.PI,0)
+			ctx.closePath()
+			ctx.fill()
+			ctx.moveTo(x,y)
+			ctx.lineTo(x-15,y-35)
+			ctx.arc(x,y-35,15,Math.PI,0)
+			ctx.closePath()
+			ctx.stroke()
+		}
+	} catch (TypeError) {
+	}
+}
+function onClickCanvas(event) {
+	let box = document.getElementById("mapImg"),
+	selectBox = document.getElementById("mapChoice"),
+	selectedMapName = selectBox.options[selectBox.selectedIndex].text,
+	map = areas[selectedMapName],
+	ex = event.offsetX, ey = event.offsetY
+	for (let point in map.regions) {
+		let coords=map.regions[point],
+		x=coords.split(",")[0], y=coords.split(",")[1]		
+		if (ex > x-15 && ex < x+15 && ey > y-50 && ey < y) {
+			document.getElementById("mapChoice").value = areas[point].img
+			changeRegion()
+			break
+		}
+	}
+}
+function populateSelector() {
+	let selector = document.getElementById("mapChoice"),
+	first = true
+	for (let x in areas) {
+		let option = document.createElement("option")
+		option.appendChild(document.createTextNode(x))
+		option.value = areas[x].img
+		if (first) {
+			option.selected = true
+			first = false
+		}
+		selector.appendChild(option)
+	}
+	changeRegion()
+}
+function main() {
+	document.getElementById("mapCanvas").addEventListener("click",onClickCanvas)
+	populateSelector()
+}
+</script>
+</head>
+<body onload="main()">
+<div id="content" class="sithis">
+<div id="left" class="sidebar">
+	<select id="mapChoice" onchange="changeRegion()">
+	</select><br/><br/>
+	<p id="description">
+	</p>
+</div>
+<div id="centre" style="flex-basis:100%">
+	<img id="mapImg" src="./maps/northwest.jpg" onload="updateCanvas()" class="hidden"/>
+	<canvas id="mapCanvas" width="1024" height="768" style="width:1024px;height:768px"/>
+</div>
+</div>
+</body>
+</html>

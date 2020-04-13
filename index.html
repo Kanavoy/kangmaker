@@ -264,11 +264,12 @@ function main() {
 	<input type="radio" name="controls" onchange="switchControls()" value="overlayControls"/>Overlay Options<br/><br/><br/>
 	<div id="splashScreen" style="display:block">
 		<h3>KANGMAKER</h3>
-		Rules are <a href="https://homebrewery.naturalcrit.com/share/SkbLigfRr">here</a> and will be updated as and when the mood takes me. Enjoy, and hail to the kang.
+		Rules are <a href="https://homebrewery.naturalcrit.com/share/SkbLigfRr">here</a> and will be updated as and when the mood takes me. Enjoy, and hail to the kang.<br/><br/>
+		Go <a href="./map.html">here</a> to view maps of the setting.
 	</div>
 	<div id="gridControls" style="display:none">
 		Look in the source for the default data scheme, it's a big ol' chunk starting with "data = {". Make sure if you're using your own JSON file that it's valid, because I sure as hell don't validate anything.<br/><br/>
-		Map Image: <input type="file" id="mapImage" value="" onchange="onChangeMap()"/><img id="mapImg" class="hidden" src="./Map.jpg"/><br/>
+		Map Image: <input type="file" id="mapImage" value="" onchange="onChangeMap()"/><img id="mapImg" class="hidden" src="./maps/shelyns_watch.jpg"/><br/>
 		Map JSON: <input type="file" id="mapData" value="" onchange="onChangeData()"/><br/><br/>
 		<input type="radio" name="hexOrientation" id="hexOrientationNormal" value="0" checked="true"/>Normal<br/>
 		<input type="radio" name="hexOrientation" id="hexOrientationRotated" value="1"/>Rotated<br/>
@@ -290,8 +291,9 @@ function main() {
 		<input type="range" id="shadeTerritory" min="0" max="1" step="0.05" value="0.3" onchange="redraw()">Shade Territory<br/>
 	</div>
 </div>
-<div id="centre" style="flex-basis:1024px" class="mainScreen">
-	<canvas id="hexCanvas" width="1024" height="768" style="width:1024px;height:768px" />
+<div id="centre" style="flex-basis:100%;
+    margin: auto;" class="mainScreen">
+	<canvas id="hexCanvas" width="1024" height="768" style="width:1024px; height:768px" />
 </div>
 <div id="right" class="sidebar">
 	Selected: <span id="selectedHex">no hex selected</span><br/><br/>
