@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-UK">
+<head>
+<meta charset="UTF-8">
+<link href="./main.css" rel="stylesheet" type="text/css" media="all">
+<script type="text/javascript">
+let choose = a => a[Math.floor(Math.random()*a.length)]
+var scales, templates, skills
+scales = {
+	abilities : [
+		[4,3,2,0],
+		[4,3,2,0],
+		[5,4,3,1],
+		[5,4,3,1],
+		[5,4,3,1],
+		[6,5,3,2],
+		[6,5,4,2],
+		[7,5,4,2],
+		[7,6,4,2],
+		[7,6,4,3],
+		[7,6,4,3],
+		[8,7,5,3],
+		[8,7,5,3],
+		[8,7,5,4],
+		[9,8,5,4],
+		[9,8,5,4],
+		[9,8,6,4],
+		[10,9,6,5],
+		[10,9,6,5],
+		[10,9,6,5],
+		[11,10,6,5],
+		[11,10,7,6],
+		[11,10,7,6],
+		[11,10,8,6],
+		[11,10,8,6],
+		[13,12,9,7],
+	],
+	Perception : [
+		[9,8,5,2,0],
+		[10,9,6,3,1],
+		[11,10,7,4,2],
+		[12,11,8,5,3],
+		[14,12,9,6,4],
+		[15,14,11,8,6],
+		[17,15,12,9,7],
+		[18,17,14,11,8],
+		[20,18,15,12,10],
+		[21,19,16,13,11],
+		[23,21,18,15,12],
+		[24,22,19,16,14],
+		[26,24,21,18,15],
+		[27,25,22,19,16],
+		[29,26,23,20,18],
+		[30,28,25,22,19],
+		[32,29,26,23,20],
+		[33,30,28,25,22],
+		[35,32,29,26,23],
+		[36,33,30,27,24],
+		[38,35,32,29,26],
+		[39,36,33,30,27],
+		[41,38,35,32,28],
+		[43,39,36,33,30],
+		[44,40,37,34,31],
+		[46,42,38,36,32],
+	],
+	skills : [
+		[8,5,4,2],
+		[9,6,5,3],
+		[10,7,6,4],
+		[11,8,7,5],
+		[13,10,9,7],
+		[15,12,10,8],
+		[16,13,12,10],
+		[18,15,13,11],
+		[20,17,15,13],
+		[21,18,16,14],
+		[23,20,18,16],
+		[25,22,19,17],
+		[26,23,21,19],
+		[28,25,22,20],
+		[30,27,24,22],
+		[31,28,25,23],
+		[33,30,27,25],
+		[35,32,28,26],
+		[36,33,30,28],
+		[38,35,31,29],
+		[40,37,33,31],
+		[41,38,34,32],
+		[43,40,36,34],
+		[45,42,37,35],
+		[46,43,38,36],
+		[48,45,40,38],
+	],
+	AC : [
+		[18,15,14,12],
+		[19,16,15,13],
+		[19,16,15,13],
+		[21,18,17,15],
+		[22,19,18,16],
+		[24,21,20,18],
+		[25,22,21,19],
+		[27,24,23,21],
+		[28,25,24,22],
+		[30,27,26,24],
+		[31,28,27,25],
+		[33,30,29,27],
+		[34,31,30,28],
+		[36,33,32,30],
+		[37,34,33,31],
+		[39,36,35,33],
+		[40,37,36,34],
+		[42,39,38,36],
+		[43,40,39,37],
+		[45,42,41,39],
+		[46,43,42,40],
+		[48,45,44,42],
+		[49,46,45,43],
+		[51,48,47,45],
+		[52,49,48,46],
+		[54,51,50,48],
+	],
+	saves : [
+		[9,8,5,2,0],
+		[10,9,6,3,1],
+		[11,10,7,4,2],
+		[12,11,8,5,3],
+		[14,12,9,6,4],
+		[15,14,11,8,6],
+		[17,15,12,9,7],
+		[18,17,14,11,8],
+		[20,18,15,12,10],
+		[21,19,16,13,11],
+		[23,21,18,15,12],
+		[24,22,19,16,14],
+		[26,24,21,18,15],
+		[27,25,22,19,16],
+		[29,26,23,20,18],
+		[30,28,25,22,19],
+		[32,29,26,23,20],
+		[33,30,28,25,22],
+		[35,32,29,26,23],
+		[36,33,30,27,24],
+		[38,35,32,29,26],
+		[39,36,33,30,27],
+		[41,38,35,32,28],
+		[43,39,36,33,30],
+		[44,40,37,34,31],
+		[46,42,38,36,32],
+	],
+	HP : [
+		[9,8,6],
+		[20,16,13],
+		[26,21,16],
+		[40,32,25],
+		[59,48,37],
+		[78,63,48],
+		[97,78,59],
+		[123,99,75],
+		[148,119,90],
+		[173,139,105],
+		[198,159,120],
+		[223,179,135],
+		[248,199,150],
+		[273,219,165],
+		[298,239,180],
+		[323,259,195],
+		[348,279,210],
+		[373,299,225],
+		[398,319,240],
+		[423,339,255],
+		[448,359,270],
+		[473,379,285],
+		[505,405,305],
+		[544,436,329],
+		[581,466,351],
+		[633,508,383],
+	],
+	Resist : [
+		[1,1],
+		[3,1],
+		[3,2],
+		[5,2],
+		[6,3],
+		[7,4],
+		[8,4],
+		[9,5],
+		[10,5],
+		[11,6],
+		[12,6],
+		[13,7],
+		[14,7],
+		[15,8],
+		[16,8],
+		[17,9],
+		[18,9],
+		[19,9],
+		[19,10],
+		[20,10],
+		[21,11],
+		[22,11],
+		[23,12],
+		[24,12],
+		[25,13],
+		[26,13],
+	],
+	attack : [
+		[10,8,6,4],
+		[10,8,6,4],
+		[11,9,7,5],
+		[13,11,9,7],
+		[14,12,10,8],
+		[16,14,12,9],
+		[17,15,13,11],
+		[19,17,15,12],
+		[20,18,16,13],
+		[22,20,18,15],
+		[23,21,19,16],
+		[25,23,21,17],
+		[27,24,22,19],
+		[28,26,24,20],
+		[29,27,25,21],
+		[31,29,27,23],
+		[32,30,28,24],
+		[34,32,30,25],
+		[35,33,31,27],
+		[37,35,33,28],
+		[38,36,34,29],
+		[40,38,36,31],
+		[41,39,37,32],
+		[43,41,39,33],
+		[44,42,40,35],
+		[46,44,42,36],
+	],
+	damage : [
+		["1d6+1","1d4+1","1d4","1d4"],
+		["1d6+3","1d6+2","1d4+2","1d4+1"],
+		["1d8+4","1d6+3","1d6+2","1d4+2"],
+		["1d12+4","1d10+4","1d8+4","1d6+3"],
+		["1d12+8","1d10+6","1d8+6","1d6+5"],
+		["2d10+7","2d8+5","2d6+5","2d4+4"],
+		["2d12+7","2d8+7","2d6+6","2d4+6"],
+		["2d12+10","2d8+9","2d6+8","2d4+7"],
+		["2d12+12","2d10+9","2d8+8","2d6+6"],
+		["2d12+15","2d10+11","2d8+9","2d6+8"],
+		["2d12+17","2d10+13","2d8+11","2d6+9"],
+		["2d12+20","2d12+13","2d10+11","2d6+10"],
+		["2d12+22","2d12+15","2d10+12","2d8+10"],
+		["3d12+19","3d10+14","3d8+12","3d6+10"],
+		["3d12+21","3d10+16","3d8+14","3d6+11"],
+		["3d12+24","3d10+18","3d8+15","3d6+13"],
+		["3d12+26","3d12+17","3d10+14","3d6+14"],
+		["3d12+29","3d12+18","3d10+15","3d6+15"],
+		["3d12+31","3d12+19","3d10+16","3d6+16"],
+		["3d12+34","3d12+20","3d10+17","3d6+17"],
+		["4d12+29","4d10+20","4d8+17","4d6+14"],
+		["4d12+32","4d10+22","4d8+19","4d6+15"],
+		["4d12+34","4d10+24","4d8+20","4d6+17"],
+		["4d12+37","4d10+26","4d8+22","4d6+18"],
+		["4d12+39","4d12+24","4d10+20","4d6+19"],
+		["4d12+42","4d12+26","4d10+22","4d6+21"],
+	],
+}
+templates = {
+	Alchemist: {Perception:3,skills:{Crafting:1},INT:1,abilities:["Quick Alchemy"],choices:[{DEX:1},{STR:1}]},
+	Barbarian: {skills:{Athletics:1},STR:1,CON:1,AC:1,HP:1,Fort:1,damage:0,abilities:["Rage"]},
+	Bard: {skills:{Occultism:2,Performance:1,Diplomacy:1,Intimidation:1,Deception:1},CHA:1,Fort:3,Will:1,HP:3,attack:3,spell:1,abilities:["Occult Magic"]},
+	Champion: {Perception:3,skills:{Religion:2},AC:0,Ref:3,damage:1,abilities:["Shield Block","Devotion Spells"],choices:[{DEX:1},{STR:1}]},
+	Cleric: {Perception:1,skills:{Religion:1},AC:3,WIS:1,Fort:3,Will:1,HP:3,attack:3,spell:0,abilities:["Divine Font","Divine Magic"]},
+	Druid: {Perception:1,skills:{Nature:1},WIS:1,Will:1,attack:3,spell:1,abilities:["Shield Block","Druid Order","Primal Magic"]},
+	Fighter: {skills:{Athletics:1},AC:1,Will:3,attack:1,damage:1,abilities:["Attack of Opportunity","Shield Block"],choices:[{DEX:1},{STR:1}]},
+	Monk: {skills:{Athletics:1,Acrobatics:1},AC:1,damage:1,abilities:["Flurry of Blows"],choices:[{DEX:1},{STR:1}]},
+	Ranger: {Perception:1,skills:{Nature:2,Survival:1},AC:1,damage:1,abilities:["Hunt Prey"],choices:[{DEX:1},{STR:1}]},
+	Rogue: {Perception:1,DEX:1,skills:{Stealth:1,Thievery:1},AC:1,Fort:3,Ref:1,HP:1,damage:3,abilities:["Sneak Attack"]},
+	Sorcerer: {Perception:3,CHA:1,AC:3,Fort:3,HP:3,attack:3,spell:0,choices:[{skills:{Intimidation:1}},{skills:{Deception:1}},{skills:{Persuasion:1}}],choices2:[{abilities:["Divine Magic"]},{abilities:["Occult Magic"]},{abilities:["Arcane Magic"]},{abilities:["Arcane Magic"]}]},
+	Wizard: {Perception:3,skills:{Arcana:1},INT:1,AC:3,Fort:3,HP:3,attack:3,spell:1,abilities:["Arcane Magic"]},
+}
+skills = {
+	Acrobatics: "DEX",
+	Arcana: "INT",
+	Athletics: "STR",
+	Crafting: "INT",
+	Deception: "CHA",
+	Diplomacy: "CHA",
+	Intimidation: "CHA",
+	Lore: "INT",
+	Medicine: "WIS",
+	Nature: "WIS",
+	Occultism: "INT",
+	Performance: "CHA",
+	Religion: "WIS",
+	Society: "CHA",
+	Stealth: "DEX",
+	Survival: "WIS",
+	Thievery: "DEX",
+}
+function genCreature() {
+	var ctr = {}
+	ctr.level = +document.getElementById("level").value+1
+	ctr.templates = [document.getElementById("templateChoice").value]
+	ctr.getScale = function (stat, scaling) {
+		let scalerow = scales[stat][this.level]
+		return scalerow[Math.min(scaling,scalerow.length-1)]
+	}
+	ctr.abilities = []
+	ctr.scalings = {
+		"STR":2,
+		"DEX":2,
+		"CON":2,
+		"INT":2,
+		"WIS":2,
+		"CHA":2,
+		"Perception":2,
+		"skills":{},
+		"AC":2,
+		"HP":2,
+		"Fort":2,
+		"Ref":2,
+		"Will":2,
+		"attack":2,
+		"damage":2,
+		"spell":2,
+		"abilities":{}
+	}
+	let merge = (ctr,t) => {
+		let s=ctr.scalings.skills
+		ctr.scalings = Object.assign({},ctr.scalings,t)
+		ctr.scalings.skills = Object.assign({},ctr.scalings.skills,s)
+		ctr.abilities = ctr.abilities.concat(t.abilities)
+	}
+	//give them a handful of random skills
+	for (let x=choose([2,2,2,3,3,4]);x--;)
+		ctr.scalings.skills[choose(Object.keys(skills))] = 2
+	//add abilities from templates and perform choices
+	for (let x of ctr.templates) {
+		let tem = templates[x]
+		merge(ctr,tem)
+		for (let x in tem) {
+			if (x.slice(0,7)=="choices") {
+				merge(ctr,choose(tem[x]))
+			}
+		}
+	}
+	//assign these now so later calculations can use them
+	for (let x of ["STR","DEX","CON","INT","WIS","CHA"])
+		ctr[x] = ctr.getScale("abilities",ctr.scalings[x])
+	displayCreature(ctr)
+}
+function displayCreature(ctr) {
+	let div = document.getElementById("right"),
+	write = (...t) => div.innerHTML += t.join("") + "<br/>",
+	outputScale = (stat,bonus,name) => (name||stat)+" +"+(ctr.getScale(stat,ctr.scalings[name||stat])+(ctr[bonus]||0))
+	div.innerHTML = ""
+	write(ctr.templates.join(" ")," Creature ",ctr.level-1)
+	write(outputScale("Perception","WIS"))
+	write(Object.keys(ctr.scalings.skills).map(s=>
+		s+" +"+
+		(ctr.getScale("skills",ctr.scalings.skills[s])+ctr[skills[s]])
+	).join(", ")
+	)
+	write(["STR","DEX","CON","INT","WIS","CHA"].map(s=>s+" +"+ctr[s]).join(", "))
+	write()
+	write("AC ",ctr.getScale("AC",ctr.scalings.AC)+ctr.DEX,", ",outputScale("saves","CON","Fort"),", ",outputScale("saves","DEX","Ref"),", ",outputScale("saves","WIS","Will"))
+	write(outputScale("HP").replace("+",""))
+	write()
+	write("Speed ",choose([10,15,20,20,25,25,25,25,25,25,30,30,35,40]))
+	let calDmg = bonus => {
+		let dmg = ctr.getScale("damage",ctr.scalings.damage).split("+")
+		if (dmg.length>1)
+			dmg[1] = +dmg[1]+bonus
+		return dmg.join("+")
+	}
+	write("Melee +",ctr.getScale("attack",ctr.scalings.attack)+ctr.STR,", Damage ",calDmg(ctr.STR))
+	write("Ranged +",ctr.getScale("attack",ctr.scalings.attack)+ctr.DEX,", Damage ",calDmg(ctr.DEX))
+	write(ctr.abilities.join("<br/>"))
+
+}
+function populateSelector() {
+	let selector = document.getElementById("templateChoice"),
+	first = true
+	for (let x in templates) {
+		let option = document.createElement("option")
+		option.appendChild(document.createTextNode(x))
+		option.value = x
+		if (first) {
+			option.selected = true
+			first = false
+		}
+		selector.appendChild(option)
+	}
+}
+function main() {
+	populateSelector()
+	genCreature()
+}
+</script>
+</head>
+<body onload="main()">
+<div id="content" class="sithis">
+<div id="left" class="sidebar">
+	<input type="number" id="level" min="-1" max="24" step="1" value="1" onchange="genCreature()"/>Level (-1 to 24)<br/>
+	<select id="templateChoice" onchange="genCreature()">
+	</select>
+</div>
+<div id="right" class="sidebar">
+	
+</div>
+</div>
+</body>
+</html>
